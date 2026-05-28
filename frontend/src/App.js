@@ -22,7 +22,7 @@ async function fetchLeads(query) {
     country:    query.country,
     maxResults: query.maxResults,
   });
-  const res = await fetch(`/api/search?${params}`);
+  const res = await fetch(`https://gmb-finder.vercel.app/api/search?${params}`);
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || data.error || "Search failed");
   return data.results;
