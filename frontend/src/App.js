@@ -446,7 +446,8 @@ export default function App() {
     try {
       const params = new URLSearchParams({ industry: q.industry, city: q.city, country: q.country, maxResults: q.maxResults });
       const res = await fetch(`${BACKEND}/api/search?${params}`);
-      const data = await res.json();
+      const text = await res.text();
+      const data = JSON.parse(text.startsWith("data:") ? text.split("data:")[1] : text);
       if (!res.ok) throw new Error(data.message || data.error || "Search failed");
       setResults(data.results);
       setAllResults((prev) => { const ids = new Set(prev.map((b) => b.id)); return [...prev, ...data.results.filter((b) => !ids.has(b.id))]; });
