@@ -233,36 +233,6 @@ function LeadCard({ biz, saved, contacted, note, onSave, onContact, onOutreach, 
   );
 }
 
-function StateSearchProgress({ progress, onCancel }) {
-  const pct = progress.totalCities ? Math.round((progress.citiesScanned / progress.totalCities) * 100) : 0;
-  return (
-    <div style={{ maxWidth: 600, margin: "0 auto", padding: "60px 24px", textAlign: "center" }}>
-      <div style={{ width: 60, height: 60, border: "5px solid #E8F4F8", borderTop: "5px solid #0091D1", borderRadius: "50%", animation: "spin 0.9s linear infinite", margin: "0 auto 24px" }} />
-      <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1F2937", margin: "0 0 8px" }}>
-        Scanning {progress.state}…
-      </h2>
-      <p style={{ color: "#6B7280", fontSize: 14, margin: "0 0 28px" }}>
-        Searching {progress.industry} across all major cities
-      </p>
-      <div style={{ background: "#E8F4F8", borderRadius: 99, height: 10, marginBottom: 16, overflow: "hidden" }}>
-        <div style={{ background: "#0091D1", height: "100%", width: `${pct}%`, borderRadius: 99, transition: "width 0.5s ease" }} />
-      </div>
-      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: "#6B7280", marginBottom: 24 }}>
-        <span>{progress.citiesScanned || 0} / {progress.totalCities || 0} cities scanned</span>
-        <span style={{ color: "#0091D1", fontWeight: 700 }}>{progress.totalSoFar || 0} leads found</span>
-      </div>
-      {progress.lastCity && (
-        <div style={{ background: "#F8FBFF", border: "1px solid #E0EEF8", borderRadius: 10, padding: "10px 16px", fontSize: 13, color: "#374151", marginBottom: 20 }}>
-          ✅ {progress.lastCity} — <strong>{progress.lastCityFound}</strong> unclaimed found
-        </div>
-      )}
-      <button onClick={onCancel} style={{ background: "#F3F4F6", color: "#6B7280", border: "none", borderRadius: 8, padding: "9px 20px", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
-        Cancel
-      </button>
-    </div>
-  );
-}
-
 function SearchPage({ onCitySearch, onStateSearch }) {
   const [mode, setMode] = useState("city");
   const [form, setForm] = useState({ country: "USA", city: "", state: "", industry: "", maxResults: "20" });
@@ -277,12 +247,12 @@ function SearchPage({ onCitySearch, onStateSearch }) {
   };
 
   const EXAMPLES = [
-    ["Dentist", "Miami", "USA"],
-    ["Plumber", "Dallas", "USA"],
-    ["Roofer", "London", "UK"],
-    ["Restaurant", "Toronto", "Canada"],
-    ["HVAC", "Chicago", "USA"],
-    ["Electrician", "Sydney", "Australia"],
+    ["Dentist","Miami","USA"],
+    ["Plumber","Dallas","USA"],
+    ["Roofer","London","UK"],
+    ["Restaurant","Toronto","Canada"],
+    ["HVAC","Chicago","USA"],
+    ["Electrician","Sydney","Australia"],
   ];
 
   return (
@@ -311,7 +281,7 @@ function SearchPage({ onCitySearch, onStateSearch }) {
 
       {mode === "state" && (
         <div style={{ background: "#E8F4F8", border: "1.5px solid #C8E4F8", borderRadius: 12, padding: "14px 18px", marginBottom: 20, fontSize: 13, color: "#0070A8" }}>
-          <strong>🚀 State Scan:</strong> Puri state ke saare major cities automatically scan honge — 100+ unclaimed profiles mil sakti hain!
+          <strong>🚀 State Scan:</strong> Top 5 major cities automatically scan hongi — fast aur reliable results!
         </div>
       )}
 
@@ -320,7 +290,7 @@ function SearchPage({ onCitySearch, onStateSearch }) {
           <div>
             <label style={{ fontSize: 10, fontWeight: 800, color: "#9CA3AF", letterSpacing: 1, textTransform: "uppercase", display: "block", marginBottom: 5 }}>Country</label>
             <select value={form.country} onChange={set("country")} style={S.inp}>
-              {["USA", "UK", "Canada", "Australia"].map((c) => <option key={c}>{c}</option>)}
+              {["USA","UK","Canada","Australia"].map((c) => <option key={c}>{c}</option>)}
             </select>
           </div>
 
@@ -348,7 +318,7 @@ function SearchPage({ onCitySearch, onStateSearch }) {
             <div>
               <label style={{ fontSize: 10, fontWeight: 800, color: "#9CA3AF", letterSpacing: 1, textTransform: "uppercase", display: "block", marginBottom: 5 }}>Max Results</label>
               <select value={form.maxResults} onChange={set("maxResults")} style={S.inp}>
-                {["10", "20", "30", "50"].map((n) => <option key={n}>{n}</option>)}
+                {["10","20","30","50"].map((n) => <option key={n}>{n}</option>)}
               </select>
             </div>
           )}
@@ -358,7 +328,7 @@ function SearchPage({ onCitySearch, onStateSearch }) {
           onClick={() => ready && (mode === "city" ? onCitySearch(form) : onStateSearch(form))}
           disabled={!ready}
           style={{ width: "100%", background: ready ? "#0091D1" : "#C8DDE8", color: "#fff", border: "none", borderRadius: 12, padding: "15px 0", fontSize: 15, fontWeight: 800, cursor: ready ? "pointer" : "default", boxShadow: ready ? "0 4px 18px rgba(0,145,209,0.3)" : "none" }}>
-          {mode === "city" ? "🔍 Scan City" : "🗺️ Scan Full State — Find All Unclaimed"}
+          {mode === "city" ? "🔍 Scan City" : "🗺️ Scan State — Find Unclaimed Profiles"}
         </button>
       </div>
 
@@ -378,7 +348,7 @@ function SearchPage({ onCitySearch, onStateSearch }) {
 }
 
 function ResultsPage({ query, results, saved, contacted, notes, onSave, onContact, onOutreach, onNote, onBack }) {
-  const [minConf, setMinConf] = useState(40);
+  const [minConf, setMinConf] = useState(30);
   const [sort, setSort] = useState("confidence");
   const [search, setSearch] = useState("");
 
@@ -388,7 +358,7 @@ function ResultsPage({ query, results, saved, contacted, notes, onSave, onContac
     .sort((a, b) => sort === "confidence" ? b.confidence - a.confidence : b.reviewCount - a.reviewCount);
 
   const exportCSV = () => {
-    const H = ["Name", "Address", "Phone", "Website", "Rating", "Reviews", "Category", "Has Hours", "Place ID", "Maps URL", "Confidence", "Signals"];
+    const H = ["Name","Address","Phone","Website","Rating","Reviews","Category","Has Hours","Place ID","Maps URL","Confidence","Signals"];
     const rows = filtered.map((b) => [b.name, b.address, b.phone || "", b.website || "", b.rating, b.reviewCount, b.category, b.hasHours ? "Yes" : "No", b.placeId, b.mapsUrl, b.confidence + "%", b.signals.join("; ")]);
     const csv = [H, ...rows].map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
     const a = document.createElement("a");
@@ -403,9 +373,12 @@ function ResultsPage({ query, results, saved, contacted, notes, onSave, onContac
         <button onClick={onBack} style={{ background: "#F3F4F6", border: "none", borderRadius: 8, padding: "7px 13px", cursor: "pointer", color: "#6B7280", fontSize: 13, fontWeight: 700 }}>← Back</button>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 20, fontWeight: 800, color: "#1F2937" }}>
-            {query.industry}s in {query.state ? `${query.state} (Full State)` : query.city}, {query.country}
+            {query.industry}s in {query.state ? `${query.state} (State Scan)` : query.city}, {query.country}
           </div>
-          <div style={{ color: "#6B7280", fontSize: 13, marginTop: 2 }}>{results.length} total · {filtered.length} showing</div>
+          <div style={{ color: "#6B7280", fontSize: 13, marginTop: 2 }}>
+            {results.length} total · {filtered.length} showing
+            {query.citiesScanned && <span style={{ marginLeft: 8, color: "#0091D1" }}>· {query.citiesScanned} cities scanned</span>}
+          </div>
         </div>
         <button onClick={exportCSV} style={{ background: "#0091D1", color: "#fff", border: "none", borderRadius: 8, padding: "9px 18px", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>⬇ Export CSV</button>
       </div>
@@ -425,10 +398,11 @@ function ResultsPage({ query, results, saved, contacted, notes, onSave, onContac
 
       <div style={{ display: "flex", gap: 10, marginBottom: 18, alignItems: "center", flexWrap: "wrap" }}>
         <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="🔍 Filter by name or address…" style={{ ...S.inp, flex: 1, minWidth: 200 }} />
-        {[["confidence", "Confidence"], ["reviews", "Reviews"]].map(([v, l]) => (
+        {[["confidence","Confidence"],["reviews","Reviews"]].map(([v, l]) => (
           <button key={v} onClick={() => setSort(v)} style={S.btn(sort === v)}>{l}</button>
         ))}
         <select value={minConf} onChange={(e) => setMinConf(+e.target.value)} style={{ ...S.inp, width: "auto", padding: "7px 12px", fontSize: 12 }}>
+          <option value={20}>20%+</option>
           <option value={30}>30%+</option>
           <option value={40}>40%+</option>
           <option value={60}>60%+</option>
@@ -461,13 +435,11 @@ export default function App() {
   const [results, setResults] = useState([]);
   const [allResults, setAllResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [stateProgress, setStateProgress] = useState(null);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState([]);
   const [contacted, setContacted] = useState([]);
   const [notes, setNotes] = useState({});
   const [outreachBiz, setOutreach] = useState(null);
-  const cancelRef = useRef(false);
 
   const handleCitySearch = async (q) => {
     setQuery(q); setError(""); setLoading(true); setPage("results");
@@ -482,42 +454,21 @@ export default function App() {
     setLoading(false);
   };
 
-  const handleStateSearch = (q) => {
-    cancelRef.current = false;
+  const handleStateSearch = async (q) => {
     setQuery({ ...q, searchType: "state" });
     setError("");
-    setResults([]);
-    setStateProgress({ state: q.state, industry: q.industry, totalCities: 0, citiesScanned: 0, totalSoFar: 0 });
-    setPage("state-loading");
-
-    const params = new URLSearchParams({ industry: q.industry, state: q.state, country: q.country });
-    const evtSource = new EventSource(`${BACKEND}/api/search-state?${params}`);
-    const collected = [];
-    const seenIds = new Set();
-
-    evtSource.onmessage = (e) => {
-      if (cancelRef.current) { evtSource.close(); setPage("search"); return; }
-      const data = JSON.parse(e.data);
-      if (data.type === "start") {
-        setStateProgress((p) => ({ ...p, totalCities: data.totalCities }));
-      } else if (data.type === "cityDone") {
-        setStateProgress((p) => ({ ...p, citiesScanned: data.citiesScanned, totalSoFar: data.totalSoFar, lastCity: data.city, lastCityFound: data.found }));
-      } else if (data.type === "complete") {
-        evtSource.close();
-        data.results.forEach((b) => { if (!seenIds.has(b.id)) { seenIds.add(b.id); collected.push(b); } });
-        setResults([...collected]);
-        setAllResults((prev) => { const ids = new Set(prev.map((b) => b.id)); return [...prev, ...collected.filter((b) => !ids.has(b.id))]; });
-        setStateProgress(null);
-        setPage("results");
-      }
-    };
-
-    evtSource.onerror = () => {
-      evtSource.close();
-      if (collected.length > 0) { setResults([...collected]); setPage("results"); }
-      else { setError("State scan failed. Please try again."); setPage("search"); }
-      setStateProgress(null);
-    };
+    setLoading(true);
+    setPage("results");
+    try {
+      const params = new URLSearchParams({ industry: q.industry, state: q.state, country: q.country });
+      const res = await fetch(`${BACKEND}/api/search-state?${params}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || data.error || "State scan failed");
+      setQuery((prev) => ({ ...prev, citiesScanned: data.citiesScanned, totalCities: data.totalCities }));
+      setResults(data.results);
+      setAllResults((prev) => { const ids = new Set(prev.map((b) => b.id)); return [...prev, ...data.results.filter((b) => !ids.has(b.id))]; });
+    } catch (e) { setError(e.message); setPage("search"); }
+    setLoading(false);
   };
 
   const toggleSave = (id) => setSaved((p) => p.includes(id) ? p.filter((x) => x !== id) : [...p, id]);
@@ -566,26 +517,25 @@ export default function App() {
       {loading
         ? <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "70vh" }}>
             <div style={{ width: 44, height: 44, border: "4px solid #E8F4F8", borderTop: "4px solid #0091D1", borderRadius: "50%", animation: "spin 0.9s linear infinite", marginBottom: 18 }} />
-            <div style={{ fontSize: 17, fontWeight: 700, color: "#1F2937" }}>Scanning profiles…</div>
+            <div style={{ fontSize: 17, fontWeight: 700, color: "#1F2937" }}>Scanning Google Business Profiles…</div>
+            <div style={{ color: "#9CA3AF", marginTop: 7, fontSize: 13 }}>Please wait, fetching results…</div>
           </div>
-        : page === "state-loading" && stateProgress
-          ? <StateSearchProgress progress={stateProgress} onCancel={() => { cancelRef.current = true; setPage("search"); setStateProgress(null); }} />
-          : page === "search"
-            ? <SearchPage onCitySearch={handleCitySearch} onStateSearch={handleStateSearch} />
-            : page === "results"
-              ? <ResultsPage query={query} results={results} saved={saved} contacted={contacted} notes={notes} onSave={toggleSave} onContact={toggleContact} onOutreach={setOutreach} onNote={setNote} onBack={() => setPage("search")} />
-              : <div style={{ maxWidth: 820, margin: "0 auto", padding: "28px 24px" }}>
-                  <h2 style={{ fontSize: 20, fontWeight: 800, color: "#1F2937", marginBottom: 20 }}>💾 Saved ({saved.length})</h2>
-                  {allResults.filter((b) => saved.includes(b.id)).map((biz) => (
-                    <LeadCard key={biz.id} biz={biz} saved contacted={contacted.includes(biz.id)} note={notes[biz.id] || ""} onSave={toggleSave} onContact={toggleContact} onOutreach={setOutreach} onNote={setNote} />
-                  ))}
-                  {saved.length === 0 && (
-                    <div style={{ textAlign: "center", padding: "60px 0", color: "#9CA3AF" }}>
-                      <div style={{ fontSize: 40 }}>📋</div>
-                      <div style={{ fontWeight: 700, marginTop: 12 }}>No saved leads</div>
-                    </div>
-                  )}
-                </div>
+        : page === "search"
+          ? <SearchPage onCitySearch={handleCitySearch} onStateSearch={handleStateSearch} />
+          : page === "results"
+            ? <ResultsPage query={query} results={results} saved={saved} contacted={contacted} notes={notes} onSave={toggleSave} onContact={toggleContact} onOutreach={setOutreach} onNote={setNote} onBack={() => setPage("search")} />
+            : <div style={{ maxWidth: 820, margin: "0 auto", padding: "28px 24px" }}>
+                <h2 style={{ fontSize: 20, fontWeight: 800, color: "#1F2937", marginBottom: 20 }}>💾 Saved ({saved.length})</h2>
+                {allResults.filter((b) => saved.includes(b.id)).map((biz) => (
+                  <LeadCard key={biz.id} biz={biz} saved contacted={contacted.includes(biz.id)} note={notes[biz.id] || ""} onSave={toggleSave} onContact={toggleContact} onOutreach={setOutreach} onNote={setNote} />
+                ))}
+                {saved.length === 0 && (
+                  <div style={{ textAlign: "center", padding: "60px 0", color: "#9CA3AF" }}>
+                    <div style={{ fontSize: 40 }}>📋</div>
+                    <div style={{ fontWeight: 700, marginTop: 12 }}>No saved leads</div>
+                  </div>
+                )}
+              </div>
       }
 
       {outreachBiz && <OutreachModal biz={outreachBiz} onClose={() => setOutreach(null)} />}
