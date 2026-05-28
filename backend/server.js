@@ -95,7 +95,7 @@ app.get("/api/search", async (req, res) => {
           confidence,
         };
       })
-      .filter((b) => b.confidence >= 40)
+      .filter((b) => b.confidence >= 20)
       .sort((a, b) => b.confidence - a.confidence);
 
     res.json({ results, total: results.length });
